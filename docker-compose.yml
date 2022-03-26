@@ -5,11 +5,13 @@ services:
     build:
       context: mjpeg-streamer
       dockerfile: Dockerfile
+    image: hleong25/mjpeg-streamer
 
   henrypi-api:
     build:
       context: henrypi-api
       dockerfile: Dockerfile
+    image: hleong25/henrypi-api
     ports:
       - 80:80
       - 8080:8080
