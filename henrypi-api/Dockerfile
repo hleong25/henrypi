@@ -1,4 +1,4 @@
-FROM hleong25/mjpeg-streamer:$TARGETARCH as builder-mjpeg-streamer
+FROM hleong25/mjpeg-streamer as builder-mjpeg-streamer
 
 FROM python:3.9-slim-bullseye
 
