@@ -1,0 +1,19 @@
+version: '3.1'
+
+services:
+  mjpeg-streamer:
+    build:
+      context: mjpeg-streamer
+      dockerfile: Dockerfile
+
+  henrypi-api:
+    build:
+      context: henrypi-api
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+      - 8080:8080
+    devices:
+      - /dev/video0
+    depends_on:
+      - mjpeg-streamer

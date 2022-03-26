@@ -1,7 +1,12 @@
-FROM python:3.9-alpine
+FROM hleong25/mjpeg-streamer:amd64 as builder-mjpeg-streamer
 
-# install nmap
-RUN apk update
+FROM python:3.9-slim-bullseye
+
+RUN apt update
+RUN apt install -y libjpeg-dev
+
+COPY --from=builder-mjpeg-streamer /mjpg-streamer_*.deb /
+RUN dpkg -i /mjpg-streamer_*.deb
 
 # setup the working directory
 WORKDIR /code
@@ -14,4 +19,4 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 COPY ./app /code/app
 
 # run the service
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
