@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.8'
 
 services:
   mjpeg-streamer:
@@ -15,7 +15,6 @@ services:
     ports:
       - 80:80
       - 8080:8080
-    devices:
-      - /dev/video0
+    privileged: true
     depends_on:
       - mjpeg-streamer
