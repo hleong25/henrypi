@@ -18,6 +18,7 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 # copy over app code
 COPY ./app /code/app
+COPY ./scripts /code/scripts
 
 # run the service
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
