@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 from app.controllers import api
 from app.controllers.exception_handlers import setup_exception_handlers
-from scripts.video_ctl import start_video_devices
+from app.services.video_control.video_control_service import VideoControlService
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
@@ -19,7 +19,7 @@ setup_exception_handlers(app)
 
 app.include_router(api.router)
 
-start_video_devices()
+VideoControlService.get_instance().auto_start_all()
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="127.0.0.1", port=8000, log_level="info")
