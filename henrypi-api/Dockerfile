@@ -5,6 +5,7 @@ FROM python:3.9-slim-bullseye
 RUN apt update
 RUN apt install -y libjpeg-dev
 RUN apt install -y v4l-utils
+RUN apt install -y psmisc
 
 COPY --from=builder-mjpeg-streamer /mjpg-streamer_*.deb /
 RUN dpkg -i /mjpg-streamer_*.deb

@@ -41,6 +41,10 @@ class VideoDevice(object):
         self.port: int = port
         self.resolutions: List[Resolution] = resolutions
 
+    def __str__(self) -> str:
+        res = [str(res) for res in self.resolutions]
+        return f'device={self.device} mjpeg_id={self.mjpeg_id} port={self.port} resolutions={res}'
+
 
 class VideoControlService(object):
     _singleton = None
@@ -147,15 +151,22 @@ class VideoControlService(object):
         return resolutions
 
     @staticmethod
-    def max_resolutions(resolutions: List[dict]) -> str:
-        max_obj = max(resolutions, key=lambda x: x['pixels'])
-        return f"{max_obj['width']}x{max_obj['height']}"
+    def shutdown_all():
+        cmd: [str] = [
+            'killall', 'mjpg_streamer'
+        ]
+
+        run_subprocess(cmd, False)
 
     def auto_start_all(self):
+        self.shutdown_all()
+
         devs = self.get_devices()
 
         for dev in devs:
             max_res = max(dev.resolutions, key=lambda res: res.pixels)
+
+            logger.info(f'Starting {str(dev)}')
 
             cmd: [str] = [
                 '/usr/local/bin/mjpg_streamer',
@@ -166,6 +177,9 @@ class VideoControlService(object):
 
             run = run_subprocess(cmd)
 
+            pattern = re.compile('background \((\d+)\)')
+
             logger.info(f'run {run}')
-            logger.info(f'[stdout] {run.stdout}')
-            logger.info(f'[stderr] {run.stderr}')
+
+            found = pattern.findall(run.stderr)
+            logger.info(f'Started video device={dev.device} on proc={found}')
