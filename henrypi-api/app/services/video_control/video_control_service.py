@@ -34,16 +34,14 @@ class VideoDevice(object):
     def __init__(self,
                  device: str,
                  mjpeg_id: int,
-                 port: int,
                  resolutions: List[Resolution]):
         self.device: str = device
         self.mjpeg_id: int = mjpeg_id
-        self.port: int = port
         self.resolutions: List[Resolution] = resolutions
 
     def __str__(self) -> str:
         res = [str(res) for res in self.resolutions]
-        return f'device={self.device} mjpeg_id={self.mjpeg_id} port={self.port} resolutions={res}'
+        return f'device={self.device} mjpeg_id={self.mjpeg_id} resolutions={res}'
 
 
 class VideoControlService(object):
@@ -64,7 +62,6 @@ class VideoControlService(object):
 
         devices = self._get_video_devices()
 
-        port = 9000
         for dev in devices:
             mjpeg_id = self._get_device_mjpeg_id(dev)
 
@@ -79,7 +76,6 @@ class VideoControlService(object):
             out.append(VideoDevice(
                 device=dev,
                 mjpeg_id=mjpeg_id,
-                port=port + len(out),
                 resolutions=resolutions,
             ))
 
@@ -199,29 +195,3 @@ class VideoControlService(object):
             )
 
         return inputs
-
-    def _auto_start_all_separate_servers(self):
-        self.shutdown_all()
-
-        devs = self.get_devices()
-
-        for dev in devs:
-            max_res = max(dev.resolutions, key=lambda res: res.pixels)
-
-            logger.info(f'Starting {str(dev)}')
-
-            cmd: [str] = [
-                '/usr/local/bin/mjpg_streamer',
-                '-i', f'input_uvc.so --device {dev.device} --fps 100 --resolution {str(max_res)}',
-                '-o', f'output_http.so --port {dev.port} --www /usr/local/share/mjpg-streamer/www',
-                '--background',
-            ]
-
-            run = run_subprocess(cmd)
-
-            pattern = re.compile('background \((\d+)\)')
-
-            logger.info(f'run {run}')
-
-            found = pattern.findall(run.stderr)
-            logger.info(f'Started video device={dev.device} on proc={found}')
