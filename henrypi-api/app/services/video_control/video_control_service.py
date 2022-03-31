@@ -163,6 +163,48 @@ class VideoControlService(object):
 
         devs = self.get_devices()
 
+        inputs: List[str] = self._generate_input_args_for_cmd(devs)
+
+        outputs: List[str] = [
+            '-o', f'output_http.so --port 9000 --www /usr/local/share/mjpg-streamer/www',
+        ]
+
+        logger.info(f'Starting all devices...')
+
+        cmd: [str] = [
+            '/usr/local/bin/mjpg_streamer',
+            '--background',
+            *inputs,
+            *outputs
+        ]
+
+        run = run_subprocess(cmd)
+
+        pattern = re.compile('background \((\d+)\)')
+
+        logger.info(f'run {run}')
+
+        found = pattern.findall(run.stderr)
+        logger.info(f'Started video server on proc={found}')
+
+    @staticmethod
+    def _generate_input_args_for_cmd(devs: List[VideoDevice]) -> List[str]:
+        inputs: List[str] = []
+        for dev in devs:
+            max_res = max(dev.resolutions, key=lambda res: res.pixels)
+
+            inputs.append('-i')
+            inputs.append(
+                f'input_uvc.so --device {dev.device} --fps 100 --resolution {str(max_res)}',
+            )
+
+        return inputs
+
+    def _auto_start_all_separate_servers(self):
+        self.shutdown_all()
+
+        devs = self.get_devices()
+
         for dev in devs:
             max_res = max(dev.resolutions, key=lambda res: res.pixels)
 
