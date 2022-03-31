@@ -28,6 +28,14 @@ class Resolution(object):
     def __str__(self):
         return f'{self.width}x{self.height}'
 
+    def to_json(self) -> dict:
+        return {
+            'width': self.width,
+            'height': self.height,
+            'pixels': self.pixels,
+            'res': str(self),
+        }
+
 
 class VideoDevice(object):
 
@@ -43,6 +51,13 @@ class VideoDevice(object):
         res = [str(res) for res in self.resolutions]
         return f'device={self.device} mjpeg_id={self.mjpeg_id} resolutions={res}'
 
+    def to_json(self) -> dict:
+        return {
+            'device': self.device,
+            'mjpeg_id': self.mjpeg_id,
+            'resolutions': [x.to_json() for x in self.resolutions]
+        }
+
 
 class VideoControlService(object):
     _singleton = None
@@ -55,9 +70,9 @@ class VideoControlService(object):
         return VideoControlService._singleton
 
     def __init__(self):
-        self._devices = []
+        self._devices: List[VideoDevice] = []
 
-    def get_devices(self) -> List[VideoDevice]:
+    def _query_devices(self) -> List[VideoDevice]:
         out: List[VideoDevice] = []
 
         devices = self._get_video_devices()
@@ -146,18 +161,19 @@ class VideoControlService(object):
 
         return resolutions
 
-    @staticmethod
-    def shutdown_all():
+    def shutdown_all(self):
         cmd: [str] = [
             'killall', 'mjpg_streamer'
         ]
 
         run_subprocess(cmd, False)
 
+        self._devices.clear()
+
     def auto_start_all(self):
         self.shutdown_all()
 
-        devs = self.get_devices()
+        devs = self._query_devices()
 
         inputs: List[str] = self._generate_input_args_for_cmd(devs)
 
@@ -183,6 +199,8 @@ class VideoControlService(object):
         found = pattern.findall(run.stderr)
         logger.info(f'Started video server on proc={found}')
 
+        self._devices = devs
+
     @staticmethod
     def _generate_input_args_for_cmd(devs: List[VideoDevice]) -> List[str]:
         inputs: List[str] = []
@@ -195,3 +213,7 @@ class VideoControlService(object):
             )
 
         return inputs
+
+    def get_devices(self) -> List[VideoDevice]:
+        return self._devices
+
