@@ -10,6 +10,7 @@ services:
       - 9000:9000
     depends_on:
       - backend
+      - frontend 
 
   mjpeg-streamer:
     build:
@@ -25,3 +26,9 @@ services:
     privileged: true
     depends_on:
       - mjpeg-streamer
+
+  frontend:
+    build:
+      context: henrypi-ui
+      dockerfile: Dockerfile
+    image: hleong25/henrypi-ui
