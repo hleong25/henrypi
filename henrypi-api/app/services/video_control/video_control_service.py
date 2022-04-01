@@ -40,19 +40,22 @@ class Resolution(object):
 class VideoDevice(object):
 
     def __init__(self,
+                 port: int,
                  device: str,
                  mjpeg_id: int,
                  resolutions: List[Resolution]):
+        self.port: int = port
         self.device: str = device
         self.mjpeg_id: int = mjpeg_id
         self.resolutions: List[Resolution] = resolutions
 
     def __str__(self) -> str:
         res = [str(res) for res in self.resolutions]
-        return f'device={self.device} mjpeg_id={self.mjpeg_id} resolutions={res}'
+        return f'port={self.port} device={self.device} mjpeg_id={self.mjpeg_id} resolutions={res}'
 
     def to_json(self) -> dict:
         return {
+            'port': self.port,
             'device': self.device,
             'mjpeg_id': self.mjpeg_id,
             'resolutions': [x.to_json() for x in self.resolutions]
@@ -77,6 +80,7 @@ class VideoControlService(object):
 
         devices = self._get_video_devices()
 
+        base_port = 9000
         for dev in devices:
             mjpeg_id = self._get_device_mjpeg_id(dev)
 
@@ -89,6 +93,7 @@ class VideoControlService(object):
                 continue
 
             out.append(VideoDevice(
+                port=base_port+len(out),
                 device=dev,
                 mjpeg_id=mjpeg_id,
                 resolutions=resolutions,
@@ -170,7 +175,37 @@ class VideoControlService(object):
 
         self._devices.clear()
 
-    def auto_start_all(self):
+    def start(self):
+        self._auto_start_all_separate_servers()
+
+    def _auto_start_all_separate_servers(self):
+        self.shutdown_all()
+
+        devs = self._query_devices()
+
+        for dev in devs:
+            default_res = min(dev.resolutions, key=lambda res: res.pixels)
+            fps = 5
+
+            logger.info(f'Starting {str(dev)}')
+
+            cmd: [str] = [
+                '/usr/local/bin/mjpg_streamer',
+                '--background',
+                '-i', f'input_uvc.so --device {dev.device} --fps {fps} --resolution {default_res}',
+                '-o', f'output_http.so --port {dev.port} --www /usr/local/share/mjpg-streamer/www',
+            ]
+
+            run = run_subprocess(cmd)
+
+            pattern = re.compile('background \((\d+)\)')
+
+            logger.info(f'run {run}')
+
+            found = pattern.findall(run.stderr)
+            logger.info(f'Started video device={dev.to_json()} on proc={found}')
+
+    def _auto_start_all_same_server(self):
         self.shutdown_all()
 
         devs = self._query_devices()

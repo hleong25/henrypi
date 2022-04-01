@@ -26,7 +26,7 @@ def video_devices():
 
 @router.post('/video/start')
 def video_start():
-    VideoControlService.get_instance().auto_start_all()
+    VideoControlService.get_instance().start()
     return Response(status_code=204)
 
 

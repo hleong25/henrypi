@@ -19,7 +19,7 @@ setup_exception_handlers(app)
 
 app.include_router(api.router)
 
-VideoControlService.get_instance().auto_start_all()
+VideoControlService.get_instance().start()
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="127.0.0.1", port=8000, log_level="info")
