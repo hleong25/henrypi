@@ -184,8 +184,9 @@ class VideoControlService(object):
         devs = self._query_devices()
 
         for dev in devs:
-            default_res = max(dev.resolutions, key=lambda res: res.pixels)
-            fps = 5
+            filtered_resolutions = filter(lambda x: x.pixels > (800*640), dev.resolutions)
+            default_res = min(filtered_resolutions, key=lambda res: res.pixels)
+            fps = 10
 
             logger.info(f'Starting {str(dev)}')
 
