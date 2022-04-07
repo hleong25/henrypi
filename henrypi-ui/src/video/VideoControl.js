@@ -1,4 +1,5 @@
 // import './VideoControl.css';
+import { BACKEND_URL } from '../config'
 import React from 'react';
 import { VideoComponent } from './Video';
 
@@ -14,7 +15,7 @@ class VideoControlComponent extends React.Component {
     }
 
     refreshVideoDevices() {
-        fetch('http://localhost:80/api/video')
+        fetch(BACKEND_URL + '/api/video')
             .then(res => res.json())
             .then(
                 (result) => {
@@ -46,7 +47,7 @@ class VideoControlComponent extends React.Component {
         } else {
             return (
                 <div className="videoControl">
-                    {devices.map(dev => ( <VideoComponent devInfo={dev} />))}
+                    {devices.map(dev => (<VideoComponent devInfo={dev} />))}
                 </div>
             );
         }
