@@ -1,0 +1,1 @@
+export { VideoControlComponent } from './VideoControl'

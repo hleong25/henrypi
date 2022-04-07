@@ -1,12 +1,12 @@
 import './App.css';
-import React from 'react';
-import { VideoControlComponent } from './video/VideoControl';
+import { VideoControlComponent } from './video';
 
 function App() {
-  // const [videoToggle, setVideoToggle] = React.useState(true);
 
   return (
-    <div className="App">
+    <div className="App container">
+      <header className="h1">HenryPi</header>
+
       <VideoControlComponent />
     </div>
   );
