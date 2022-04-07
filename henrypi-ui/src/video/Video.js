@@ -1,4 +1,4 @@
-import {BACKEND_URL} from '../config'
+import { BACKEND_URL } from '../config'
 import './Video.css';
 import React from 'react';
 
@@ -7,8 +7,8 @@ class VideoComponent extends React.Component {
         super(props);
         this.state = {
             showSnapshot: true,
-            snapshotUrl: BACKEND_URL+'/api/video/'+this.props.devInfo.port+'/snapshot',
-            streamUrl: BACKEND_URL+'/api/video/'+this.props.devInfo.port+'/stream',
+            snapshotUrl: BACKEND_URL + '/api/video/' + this.props.devInfo.port + '/snapshot',
+            streamUrl: BACKEND_URL + '/api/video/' + this.props.devInfo.port + '/stream',
 
         }
         this.handleVideoToggle = this.handleVideoToggle.bind(this);
@@ -19,7 +19,7 @@ class VideoComponent extends React.Component {
         this.setState(
             {
                 showSnapshot: !currentState,
-                snapshotUrl: 'http://localhost:80/api/video/'+this.props.devInfo.port+'/snapshot?ts=' + Date.now(),
+                snapshotUrl: 'http://localhost:80/api/video/' + this.props.devInfo.port + '/snapshot?ts=' + Date.now(),
             }
         );
     }
