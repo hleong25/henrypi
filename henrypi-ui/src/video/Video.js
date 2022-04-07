@@ -19,7 +19,7 @@ class VideoComponent extends React.Component {
         this.setState(
             {
                 showSnapshot: !currentState,
-                snapshotUrl: 'http://localhost:80/api/video/' + this.props.devInfo.port + '/snapshot?ts=' + Date.now(),
+                snapshotUrl: BACKEND_URL + '/api/video/' + this.props.devInfo.port + '/snapshot?ts=' + Date.now(),
             }
         );
     }
