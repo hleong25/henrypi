@@ -206,6 +206,8 @@ class VideoControlService(object):
             found = pattern.findall(run.stderr)
             logger.info(f'Started video device={dev.to_json()} on proc={found}')
 
+        self._devices = devs
+
     def _auto_start_all_same_server(self):
         self.shutdown_all()
 
