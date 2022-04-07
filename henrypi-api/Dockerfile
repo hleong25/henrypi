@@ -1,6 +1,6 @@
 FROM hleong25/mjpeg-streamer as builder-mjpeg-streamer
 
-FROM python:3.9-slim-bullseye
+FROM python:3.9.12-slim-bullseye
 
 RUN apt update
 RUN apt install -y libjpeg-dev
