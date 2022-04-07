@@ -28,8 +28,10 @@ class VideoComponent extends React.Component {
         return (
             <div className='video'>
                 <img
-                    onClick={this.handleVideoToggle}
                     src={this.state.showSnapshot ? this.state.snapshotUrl : this.state.streamUrl}
+                    onClick={this.handleVideoToggle}
+                    alt={this.props.devInfo.device}
+                    title={this.props.devInfo.device}
                 />
             </div>
         );

@@ -1,7 +1,7 @@
-// import './VideoControl.css';
 import { BACKEND_URL } from '../config'
 import React from 'react';
 import { VideoComponent } from './Video';
+import { ControlComponent } from './Control';
 
 class VideoControlComponent extends React.Component {
     constructor(props) {
@@ -41,12 +41,13 @@ class VideoControlComponent extends React.Component {
         const { error, isLoaded, devices } = this.state;
 
         if (error) {
-            return <div>Error: {error.message}</div>;
+            return <div className="text-danger">Error: {error.message}</div>;
         } else if (!isLoaded) {
-            return <div>Loading...</div>;
+            return <div className="text-info">Loading video devices...</div>;
         } else {
             return (
                 <div className="videoControl">
+                    {/* <ControlComponent /> */}
                     {devices.map(dev => (<VideoComponent devInfo={dev} />))}
                 </div>
             );
