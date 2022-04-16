@@ -11,20 +11,12 @@ services:
       - backend
       - frontend 
 
-  # mjpeg-streamer:
-  #   build:
-  #     context: mjpeg-streamer
-  #     dockerfile: Dockerfile
-  #   image: hleong25/mjpeg-streamer
-
   backend:
     build:
       context: henrypi-api
-      dockerfile: Dockerfile
-    image: hleong25/henrypi-api
+      dockerfile: Dockerfile.alpine
+    image: hleong25/henrypi-api:alpine3.14
     privileged: true
-    # depends_on:
-    #   - mjpeg-streamer
 
   frontend:
     build:

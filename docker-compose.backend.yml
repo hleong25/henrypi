@@ -13,8 +13,8 @@ services:
   backend:
     build:
       context: henrypi-api
-      dockerfile: Dockerfile
-    image: hleong25/henrypi-api
+      dockerfile: Dockerfile.alpine
+    image: hleong25/henrypi-api:alpine3.14
     ports:
       - 8000:8000
       - 9000:9000
