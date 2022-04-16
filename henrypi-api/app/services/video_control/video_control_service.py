@@ -191,10 +191,10 @@ class VideoControlService(object):
             logger.info(f'Starting {str(dev)}')
 
             cmd: [str] = [
-                '/usr/local/bin/mjpg_streamer',
+                'mjpg_streamer',
                 '--background',
                 '-i', f'input_uvc.so --device {dev.device} --fps {fps} --resolution {default_res}',
-                '-o', f'output_http.so --port {dev.port} --www /usr/local/share/mjpg-streamer/www',
+                '-o', f'output_http.so --port {dev.port}',
             ]
 
             run = run_subprocess(cmd)
@@ -216,13 +216,13 @@ class VideoControlService(object):
         inputs: List[str] = self._generate_input_args_for_cmd(devs)
 
         outputs: List[str] = [
-            '-o', f'output_http.so --port 9000 --www /usr/local/share/mjpg-streamer/www',
+            '-o', f'output_http.so --port 9000',
         ]
 
         logger.info(f'Starting all devices...')
 
         cmd: [str] = [
-            '/usr/local/bin/mjpg_streamer',
+            'mjpg_streamer',
             '--background',
             *inputs,
             *outputs

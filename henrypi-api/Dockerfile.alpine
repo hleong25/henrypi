@@ -1,14 +1,9 @@
-FROM hleong25/mjpeg-streamer as builder-mjpeg-streamer
+FROM python:3.9.12-alpine3.14
 
-FROM python:3.9.12-slim-bullseye
-
-RUN apt update
-RUN apt install -y libjpeg-dev
-RUN apt install -y v4l-utils
-RUN apt install -y psmisc
-
-COPY --from=builder-mjpeg-streamer /mjpg-streamer_*.deb /
-RUN dpkg -i /mjpg-streamer_*.deb
+RUN apk update
+RUN apk add v4l-utils
+RUN apk add psmisc
+RUN apk add mjpg-streamer --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
 
 # setup the working directory
 WORKDIR /code
