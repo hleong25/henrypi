@@ -162,7 +162,11 @@ class VideoControlService(object):
                 width = found[0][0]
                 height = found[0][1]
 
-                resolutions.append(Resolution(width, height))
+                res = Resolution(width, height)
+                if not any(str(x) == str(res) for x in resolutions):
+                    resolutions.append(res)
+
+        logger.info(f'device={dev} id:{mjpeg_id} resolutions:{[str(res) for res in resolutions]}')
 
         return resolutions
 
@@ -184,8 +188,10 @@ class VideoControlService(object):
         devs = self._query_devices()
 
         for dev in devs:
+            max_res = max(dev.resolutions, key=lambda res: res.pixels)
             filtered_resolutions = filter(lambda x: x.pixels > (800*640), dev.resolutions)
-            default_res = min(filtered_resolutions, key=lambda res: res.pixels)
+            default_res = min(filtered_resolutions, key=lambda res: res.pixels, default=max_res)
+
             fps = 10
 
             logger.info(f'Starting {str(dev)}')
