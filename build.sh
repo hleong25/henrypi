@@ -1,6 +1,9 @@
 #!/bin/sh
 
-cd henrypi-api
+cd henrypi-nginx
+./build.sh
+
+cd ../henrypi-api
 ./build.sh
 
 cd ../henrypi-ui
