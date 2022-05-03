@@ -18,6 +18,7 @@ services:
       context: henrypi-api
       dockerfile: Dockerfile.alpine
     image: hleong25/henrypi-api:alpine3.14
+    # restart: always
     privileged: true
 
   frontend:
@@ -25,3 +26,4 @@ services:
       context: henrypi-ui
       dockerfile: Dockerfile
     image: hleong25/henrypi-ui
+    # restart: always
