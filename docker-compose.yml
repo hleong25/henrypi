@@ -6,6 +6,7 @@ services:
       context: henrypi-nginx
       dockerfile: Dockerfile.alpine
     image: hleong25/henrypi-nginx:alpine
+    # restart: always
     ports:
       - 80:80
     depends_on:
