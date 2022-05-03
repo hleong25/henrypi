@@ -189,10 +189,12 @@ class VideoControlService(object):
 
         for dev in devs:
             max_res = max(dev.resolutions, key=lambda res: res.pixels)
-            filtered_resolutions = filter(lambda x: x.pixels > (800*640), dev.resolutions)
-            default_res = min(filtered_resolutions, key=lambda res: res.pixels, default=max_res)
+            # filtered_resolutions = filter(lambda x: x.pixels > (800*640), dev.resolutions)
+            # default_res = min(filtered_resolutions, key=lambda res: res.pixels, default=max_res)
+            default_res = max_res
 
-            fps = 10
+            # TODO: query for default fps - v4l2-ctl --device /dev/video0 --list-formats-ext
+            fps = 30
 
             logger.info(f'Starting {str(dev)}')
 
